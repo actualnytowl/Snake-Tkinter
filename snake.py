@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
 import time
-#from pynput.keyboard import Key, Controller
 from random import *
 
 mw = Tk()
@@ -32,42 +31,35 @@ fud = c.create_oval(0,0,snkx,snky)
 def check_death():
     global after,ht
     a,b,d,e = c.coords(head)
-    if(c.coords(head) in tails or a < 0 or b < 0 or e > ht or d > ht):
+    if(c.coords(head) in tails or a < 0 or b < 0 or e > ht or d > wt):
         label.config(text = "GAME OVER :(")
         c.after_cancel(after)
         if messagebox.showinfo("Result", "CHI CHI YOU LOST"):
             exit()
 
 
-def update_tail():
+def update_tail(callfrmgrow = 0):
     global tails,tail_id
     tails.append(c.coords(head))
     tails = tails[-(bodylen):]
-    for e in tail_id:
-        c.delete(e)
-    for o in tails:
-        tail_id.append(c.create_rectangle(o, fill="#6a5acd", outline="black", width="2"))
-    # c.delete(tail_id[0])
-    # tail_id.append(c.create_rectangle(tails[-1], fill="#6a5acd", outline="black", width="2"))
-    if len(tails) == score:
+    tail_id.append(c.create_rectangle(c.coords(head), fill="#6a5acd", outline="black", width="2"))
+    if callfrmgrow == 0 :
         temp = tail_id.pop(0)
-        #tail_id = tail_id[-(bodylen):]
         c.delete(temp)
-   #print(tails)
 
 
 def move(a,b):
     global x1,y1,x2,y2,head,after,tails,body,bodylen,first
     c.move(head, a*snkx,b*snky)
     check_death()
-    if any(tails):
-        update_tail()
-       # print(tails)
+
     x1, y1 = x1+(snkx*a),y1+(snky*b)
     x2, y2 = x2+(snkx*a),y2+(snky*b)
     if(x1 == p and y1 == q):
         food()
         grow()
+    elif any(tails):
+        update_tail()
 
     if(a==1):
         c.after_cancel(after)
@@ -85,7 +77,7 @@ def move(a,b):
 
 def grow():
     global bodylen,tails
-    update_tail()
+    update_tail(1)
     bodylen+=1
 
 
